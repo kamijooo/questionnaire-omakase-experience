@@ -5,14 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tokyo Dining Guide</title>
 <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  background:#f8f6f2;
+}
+.chat-container {
+  max-width:420px;
+  margin:auto;
+}
+.fade {
+  animation: fadeIn 0.4s ease forwards;
+}
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(10px);}
+  to {opacity:1; transform:translateY(0);}
+}
+</style>
+
 </head>
 
-<body class="bg-[#f8f6f2] font-sans">
+<body>
 
-<div class="max-w-md mx-auto p-4">
+<div class="chat-container p-4">
 
-<!-- CHAT AREA -->
-<div id="chat" class="flex flex-col gap-4"></div>
+<!-- HEADER -->
+<div class="text-center mb-6">
+  <h1 class="text-lg font-semibold">Tokyo Dining Guide</h1>
+  <p class="text-xs text-gray-500">Find your perfect dining experience</p>
+</div>
+
+<!-- CHAT -->
+<div id="chat" class="flex flex-col gap-3"></div>
 
 <!-- OPTIONS -->
 <div id="options" class="mt-6 flex flex-col gap-3"></div>
@@ -20,146 +44,149 @@
 </div>
 
 <script>
+
 const chat = document.getElementById("chat");
 const options = document.getElementById("options");
 
-function addBot(text){
+function bot(text){
   const div = document.createElement("div");
-  div.className = "bg-white p-4 rounded-xl shadow text-sm";
+  div.className = "bg-white p-4 rounded-2xl shadow text-sm fade";
   div.innerText = text;
   chat.appendChild(div);
 }
 
-function addUser(text){
+function user(text){
   const div = document.createElement("div");
-  div.className = "bg-[#c9a96e] text-white p-3 rounded-xl self-end text-sm";
+  div.className = "bg-[#c9a96e] text-white p-3 rounded-2xl self-end text-sm fade";
   div.innerText = text;
   chat.appendChild(div);
 }
 
-function setOptions(list){
+function setOptions(arr){
   options.innerHTML = "";
-  list.forEach(opt=>{
+  arr.forEach(o=>{
     const btn = document.createElement("button");
-    btn.className = "bg-white border p-4 rounded-xl text-left shadow";
-    btn.innerText = opt.label;
-    btn.onclick = ()=> opt.action();
+    btn.className = "bg-white border p-4 rounded-xl shadow text-left hover:bg-gray-50 active:scale-95 transition fade";
+    btn.innerText = o.label;
+    btn.onclick = ()=> o.action();
     options.appendChild(btn);
   });
 }
 
-/* ========= FLOW ========= */
+/* ===== FLOW ===== */
 
 function start(){
-  addBot("Hi! Are you looking for a special dining experience in Tokyo?");
+  bot("Let's find the best dining experience for you in Tokyo.");
+
+  setTimeout(()=>{
+    bot("First, what are you looking for?");
+    
+    setOptions([
+      {label:"Halal-friendly food", action:q2_halal},
+      {label:"Luxury experience", action:q2_lux},
+      {label:"First time in Japan", action:q2_first}
+    ]);
+
+  },500);
+}
+
+/* ===== Q2 ===== */
+
+function q2_halal(){
+  user("Halal-friendly food");
+  bot("Got it. We'll find something you can enjoy safely.");
+
+  setTimeout(()=>{
+    bot("What kind of experience would you like?");
+    
+    setOptions([
+      {label:"Wagyu", action:q3},
+      {label:"Sushi", action:q3},
+      {label:"Both", action:q3}
+    ]);
+  },500);
+}
+
+function q2_lux(){
+  user("Luxury experience");
+  bot("Perfect. Something unforgettable.");
+
+  setTimeout(()=>{
+    bot("What kind of experience would you like?");
+    
+    setOptions([
+      {label:"Wagyu", action:q3},
+      {label:"Sushi", action:q3},
+      {label:"Both", action:q3}
+    ]);
+  },500);
+}
+
+function q2_first(){
+  user("First time in Japan");
+  bot("No worries. We'll keep it simple and enjoyable.");
+
+  setTimeout(()=>{
+    bot("What kind of experience would you like?");
+    
+    setOptions([
+      {label:"Wagyu", action:q3},
+      {label:"Sushi", action:q3},
+      {label:"Both", action:q3}
+    ]);
+  },500);
+}
+
+/* ===== Q3 ===== */
+
+function q3(){
+  user("Selected");
   
-  setOptions([
-    {label:"Looking for Halal food", action: halal},
-    {label:"First time in Japan", action: first},
-    {label:"Something unique", action: unique},
-    {label:"Just exploring", action: explore}
-  ]);
+  bot("Great choice.");
+
+  setTimeout(()=>{
+    bot("Based on your preferences, this is the best match for you 👇");
+
+    recommend();
+  },800);
 }
 
-/* -------- HALAL -------- */
-function halal(){
-  addUser("Looking for Halal food");
-  addBot("Great choice. This restaurant is fully Halal-friendly.\n\n✔ No pork\n✔ No alcohol\n✔ Muslim-friendly");
+/* ===== FINAL ===== */
 
-  setOptions([
-    {label:"Tell me more", action: experience},
-  ]);
-}
-
-/* -------- FIRST -------- */
-function first(){
-  addUser("First time in Japan");
-  addBot("No worries! This experience is perfect for beginners.\n\n✔ English support\n✔ Easy to understand\n✔ Guided by chef");
-
-  setOptions([
-    {label:"What is the experience?", action: experience},
-  ]);
-}
-
-/* -------- UNIQUE -------- */
-function unique(){
-  addUser("Something unique");
-  addBot("This is not just a meal.\n\nIt's a live Omakase experience with Wagyu and Sushi.");
-
-  setOptions([
-    {label:"Sounds interesting", action: experience},
-  ]);
-}
-
-/* -------- EXPLORE -------- */
-function explore(){
-  addUser("Just exploring");
-  addBot("Let me show you one of the most recommended dining experiences in Tokyo.");
-
-  setOptions([
-    {label:"Show me", action: experience},
-  ]);
-}
-
-/* -------- EXPERIENCE -------- */
-function experience(){
-  addUser("Tell me more");
-  addBot("You sit in front of the chef.\n\n✔ Sushi made one by one\n✔ A5 Wagyu sliced in front of you\n✔ Interactive experience\n\nIt feels like a performance.");
-
-  
-  setOptions([
-    {label:"Price?", action: price},
-    {label:"Is it worth it?", action: trust}
-  ]);
-}
-
-/* -------- PRICE -------- */
-function price(){
-  addUser("Price?");
-  addBot("The experience starts from around ¥20,000.\n\nMost guests say it's the highlight of their Tokyo trip.");
-
-  
-  setOptions([
-    {label:"Show me the restaurant", action: recommend}
-  ]);
-}
-
-/* -------- TRUST -------- */
-function trust(){
-  addUser("Is it worth it?");
-  addBot("Guests say:\n\n⭐ Best meal in Tokyo\n⭐ Worth every yen\n⭐ Unforgettable experience");
-
-  
-  setOptions([
-    {label:"Show me the restaurant", action: recommend}
-  ]);
-}
-
-/* -------- FINAL -------- */
 function recommend(){
-  addUser("Show me the restaurant");
 
-  addBot("Based on what you're looking for, this is the best match for you 👇");
+  const card = document.createElement("div");
+  card.className = "bg-white p-4 rounded-2xl shadow fade";
 
-  addBot("🏆 Omakase Sushi & Wagyu Experience (Halal Friendly)\n\n✔ Premium Wagyu\n✔ Omakase Sushi\n✔ Halal certified\n✔ Located in Shinjuku");
+  card.innerHTML = `
+    <h3 class="font-semibold mb-2">Omakase Sushi & Wagyu Experience</h3>
+    <p class="text-sm text-gray-600 mb-3">
+      ✔ Halal-friendly<br>
+      ✔ Wagyu & Sushi course<br>
+      ✔ Live chef experience<br>
+      ✔ Located in Shinjuku
+    </p>
+  `;
 
-  
+  chat.appendChild(card);
+
   options.innerHTML = `
-    <a href="https://www.google.com/maps/place/Tokyo+Omakase+Sushi+Wagyu+(Halal)+Shinjuku+Restaurant/" 
+    <a href="https://www.google.com/maps/place/Tokyo+Omakase+Sushi+Wagyu+(Halal)+Shinjuku+Restaurant/"
        target="_blank"
-       class="bg-[#c9a96e] text-white text-center p-4 rounded-xl shadow">
-       View Location (Google Maps)
+       class="bg-[#c9a96e] text-white text-center p-4 rounded-xl shadow fade">
+       View Location
     </a>
 
     <a href="https://www.tablecheck.com/shops/halal-wagyu-shinjuku-5w-tokyo/reserve"
        target="_blank"
-       class="bg-black text-white text-center p-4 rounded-xl shadow">
+       class="bg-black text-white text-center p-4 rounded-xl shadow fade">
        Reserve Now
     </a>
   `;
 }
 
 start();
+
 </script>
 
 </body>
