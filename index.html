@@ -1,216 +1,166 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Tokyo Dining Guide - Premium Digital Concierge</title>
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Material Symbols -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&amp;display=swap" rel="stylesheet"/>
-<!-- Google Fonts: Noto Serif & Plus Jakarta Sans -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "surface": "#faf9f6", // Softer, high-end off-white/beige
-              "on-primary-container": "#543d0c",
-              "tertiary-container": "#a1aec5",
-              "primary-fixed-dim": "#e4c285",
-              "on-surface": "#1a1c1e",
-              "error-container": "#ffdad6",
-              "outline": "#7f7668",
-              "inverse-surface": "#2d3133",
-              "on-tertiary-container": "#354255",
-              "secondary-fixed": "#d5e3ff",
-              "secondary-fixed-dim": "#b4c7eb",
-              "surface-container-highest": "#e0e3e6",
-              "on-secondary-fixed-variant": "#344765",
-              "surface-bright": "#faf9f6",
-              "secondary": "#4c5f7e",
-              "tertiary-fixed-dim": "#bac7df",
-              "primary-fixed": "#ffdea4",
-              "on-error": "#ffffff",
-              "surface-container-lowest": "#ffffff",
-              "on-tertiary-fixed-variant": "#3b475b",
-              "surface-container-low": "#f2f4f7",
-              "on-primary-fixed": "#261900",
-              "on-surface-variant": "#4d463a",
-              "inverse-primary": "#e4c285",
-              "on-secondary-fixed": "#051c37",
-              "on-tertiary-fixed": "#0f1c2e",
-              "on-background": "#1a1c1e",
-              "secondary-container": "#c7dbff",
-              "on-error-container": "#93000a",
-              "on-tertiary": "#ffffff",
-              "error": "#ba1a1a",
-              "surface-variant": "#e0e3e6",
-              "tertiary": "#525f74",
-              "background": "#faf9f6",
-              "primary-container": "#c9a96e",
-              "tertiary-fixed": "#d6e3fc",
-              "surface-container-high": "#e6e8eb",
-              "inverse-on-surface": "#eff1f4",
-              "on-primary-fixed-variant": "#5a4312",
-              "on-secondary": "#ffffff",
-              "on-primary": "#ffffff",
-              "surface-tint": "#745a27",
-              "surface-container": "#eceef1",
-              "on-secondary-container": "#4d607f",
-              "surface-dim": "#d8dadd",
-              "primary": "#745a27",
-              "outline-variant": "#d0c5b5"
-            },
-            fontFamily: {
-              "headline": ["Noto Serif", "serif"],
-              "body": ["Plus Jakarta Sans", "sans-serif"],
-              "label": ["Inter", "sans-serif"]
-            },
-            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
-          },
-        },
-      }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .bg-gold-gradient {
-            background: linear-gradient(135deg, #745a27 0%, #c9a96e 100%);
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        body {
-            min-height: 100vh;
-        }
-    </style>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokyo Dining Guide</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container flex flex-col">
-<!-- Sophisticated Desktop Header -->
-<header class="bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant/10">
-<div class="max-w-7xl mx-auto flex justify-between items-center px-6 md:px-12 py-5">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary text-3xl" data-icon="restaurant_menu">restaurant_menu</span>
-<div class="flex flex-col">
-<h1 class="font-headline font-bold text-primary text-xl tracking-wide leading-none">Tokyo Dining Guide</h1>
-<span class="text-[10px] uppercase tracking-[0.3em] text-outline font-label mt-1">Digital Concierge</span>
+
+<body class="bg-[#f8f6f2] font-sans">
+
+<div class="max-w-md mx-auto p-4">
+
+<!-- CHAT AREA -->
+<div id="chat" class="flex flex-col gap-4"></div>
+
+<!-- OPTIONS -->
+<div id="options" class="mt-6 flex flex-col gap-3"></div>
+
 </div>
-</div>
-<nav class="hidden md:flex items-center gap-10">
-<a class="text-sm font-medium text-on-surface/70 hover:text-primary transition-colors" href="#">Our Story</a>
-<a class="text-sm font-medium text-on-surface/70 hover:text-primary transition-colors" href="#">Curations</a>
-<a class="text-sm font-medium text-on-surface/70 hover:text-primary transition-colors" href="#">Experience</a>
-<button class="bg-primary text-white px-8 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95">
-                Book Now
-            </button>
-</nav>
-<button class="md:hidden p-2">
-<span class="material-symbols-outlined" data-icon="menu">menu</span>
-</button>
-</div>
-</header>
-<!-- Main Content Canvas -->
-<main class="flex-grow flex flex-col items-center justify-start max-w-4xl mx-auto w-full px-6 pt-16 pb-24">
-<!-- Hero Decorative Image (Refined for Desktop) -->
-<div class="w-full mb-16 relative">
-<div class="aspect-[21/9] w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
-<img alt="Tokyo Skyline" class="w-full h-full object-cover" data-alt="Cinematic wide shot of Tokyo skyline at dusk with warm city lights and Mount Fuji in the distance under a soft violet sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa_Z1xasly1Bxly2ayKy_xRN_XEEOIZTjIJTO3h9gAbQ8THaFDyAqb_Xt3uGz20tl-jHLco45wpVJ_MGko2zZhJVsdYEACjsfJUfHYlLONKQDx7Vez8VqbLx1TT1i_8ilWJZqpBvFDutsAr19i0x155MLUcbcjqvthDU6HzBLlFw0Y3lw0AdxIhScPzi11Od3maV8oVX4Q7l17lU3NleerNsWvJDe0RRjndRYOVISj3XI2ry2epAa_qVChGTA60uSIBqBpP7_ZZvU"/>
-</div>
-<div class="absolute -bottom-8 right-8 bg-surface-container-lowest p-8 rounded-xl shadow-xl border border-outline-variant/20 max-w-[280px]">
-<p class="font-headline text-primary italic text-lg leading-relaxed text-right">"The essence of Tokyo is found in its flavors."</p>
-</div>
-</div>
-<!-- Conversational Area -->
-<div class="w-full max-w-[800px] flex flex-col gap-10">
-<!-- Bot Message Cluster -->
-<div class="flex flex-col items-start max-w-[80%]">
-<div class="flex items-center gap-3 mb-3 ml-1">
-<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
-<span class="material-symbols-outlined text-on-primary-container text-sm" data-icon="concierge_bell">concierge_bell</span>
-</div>
-<span class="text-[10px] font-label uppercase tracking-widest text-outline">Concierge • 09:41 AM</span>
-</div>
-<div class="bg-white border border-outline-variant/10 text-on-surface p-6 rounded-2xl rounded-bl-none shadow-sm ring-1 ring-black/5">
-<p class="text-lg leading-relaxed font-light">Welcome. Are you looking for a particular dining experience in Tokyo today? I am here to curate the perfect table for you.</p>
-</div>
-</div>
-<!-- Typing Indicator (Subtle) -->
-<div class="flex items-center gap-2 ml-12 opacity-30">
-<div class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-<div class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-<div class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
-</div>
-<!-- Narrative Selection Grid (User Options) -->
-<div class="w-full flex flex-col gap-8 pt-4">
-<div class="flex items-center gap-4">
-<div class="h-px flex-grow bg-outline-variant/30"></div>
-<h3 class="text-[10px] font-label uppercase tracking-[0.3em] text-outline whitespace-nowrap">How would you like to proceed?</h3>
-<div class="h-px flex-grow bg-outline-variant/30"></div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-<!-- Option 1 -->
-<button class="group flex items-center justify-between p-6 rounded-xl border border-outline-variant/30 bg-white hover:border-primary/40 hover:shadow-md transition-all duration-300 text-left active:scale-[0.98]">
-<div class="flex flex-col items-start">
-<span class="font-headline text-xl text-primary mb-1">A Unique Experience</span>
-<span class="text-sm text-outline font-body">Experimental omakase &amp; hidden neighborhood gems</span>
-</div>
-<span class="material-symbols-outlined text-primary-container group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
-</button>
-<!-- Option 2 -->
-<button class="group flex items-center justify-between p-6 rounded-xl border border-outline-variant/30 bg-white hover:border-primary/40 hover:shadow-md transition-all duration-300 text-left active:scale-[0.98]">
-<div class="flex flex-col items-start">
-<span class="font-headline text-xl text-primary mb-1">General Exploration</span>
-<span class="text-sm text-outline font-body">Curated recommendations based on your current mood</span>
-</div>
-<span class="material-symbols-outlined text-primary-container group-hover:translate-x-1 transition-transform" data-icon="explore">explore</span>
-</button>
-<!-- Option 3 -->
-<button class="group flex items-center justify-between p-6 rounded-xl border border-outline-variant/30 bg-white hover:border-primary/40 hover:shadow-md transition-all duration-300 text-left active:scale-[0.98]">
-<div class="flex flex-col items-start">
-<span class="font-headline text-xl text-primary mb-1">Halal Excellence</span>
-<span class="text-sm text-outline font-body">Certified luxury restaurants &amp; dietary-friendly options</span>
-</div>
-<span class="material-symbols-outlined text-primary-container group-hover:translate-x-1 transition-transform" data-icon="restaurant">restaurant</span>
-</button>
-<!-- Option 4 -->
-<button class="group flex items-center justify-between p-6 rounded-xl border border-outline-variant/30 bg-white hover:border-primary/40 hover:shadow-md transition-all duration-300 text-left active:scale-[0.98]">
-<div class="flex flex-col items-start">
-<span class="font-headline text-xl text-primary mb-1">First Time Visitor</span>
-<span class="text-sm text-outline font-body">Essential etiquette guides &amp; timeless Japanese classics</span>
-</div>
-<span class="material-symbols-outlined text-primary-container group-hover:translate-x-1 transition-transform" data-icon="map">map</span>
-</button>
-</div>
-</div>
-</div>
-</main>
-<!-- Web Footer -->
-<footer class="bg-white border-t border-outline-variant/10 py-12">
-<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-<div class="flex flex-col items-center md:items-start gap-2">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-xl" data-icon="restaurant_menu">restaurant_menu</span>
-<span class="font-headline font-bold text-primary tracking-wide">Tokyo Dining Guide</span>
-</div>
-<p class="text-xs text-outline font-body">© 2024 TDG Hospitality Group. All rights reserved.</p>
-</div>
-<div class="flex gap-10">
-<a class="text-xs font-label uppercase tracking-widest text-outline hover:text-primary transition-colors" href="#">Privacy Policy</a>
-<a class="text-xs font-label uppercase tracking-widest text-outline hover:text-primary transition-colors" href="#">Terms of Service</a>
-<a class="text-xs font-label uppercase tracking-widest text-outline hover:text-primary transition-colors" href="#">Contact Us</a>
-</div>
-<div class="flex gap-4">
-<button class="w-8 h-8 rounded-full border border-outline-variant/30 flex items-center justify-center text-outline hover:border-primary hover:text-primary transition-all">
-<span class="material-symbols-outlined text-sm" data-icon="public">public</span>
-</button>
-<button class="w-8 h-8 rounded-full border border-outline-variant/30 flex items-center justify-center text-outline hover:border-primary hover:text-primary transition-all">
-<span class="material-symbols-outlined text-sm" data-icon="mail">mail</span>
-</button>
-</div>
-</div>
-</footer>
-</body></html>
+
+<script>
+const chat = document.getElementById("chat");
+const options = document.getElementById("options");
+
+function addBot(text){
+  const div = document.createElement("div");
+  div.className = "bg-white p-4 rounded-xl shadow text-sm";
+  div.innerText = text;
+  chat.appendChild(div);
+}
+
+function addUser(text){
+  const div = document.createElement("div");
+  div.className = "bg-[#c9a96e] text-white p-3 rounded-xl self-end text-sm";
+  div.innerText = text;
+  chat.appendChild(div);
+}
+
+function setOptions(list){
+  options.innerHTML = "";
+  list.forEach(opt=>{
+    const btn = document.createElement("button");
+    btn.className = "bg-white border p-4 rounded-xl text-left shadow";
+    btn.innerText = opt.label;
+    btn.onclick = ()=> opt.action();
+    options.appendChild(btn);
+  });
+}
+
+/* ========= FLOW ========= */
+
+function start(){
+  addBot("Hi! Are you looking for a special dining experience in Tokyo?");
+  
+  setOptions([
+    {label:"Looking for Halal food", action: halal},
+    {label:"First time in Japan", action: first},
+    {label:"Something unique", action: unique},
+    {label:"Just exploring", action: explore}
+  ]);
+}
+
+/* -------- HALAL -------- */
+function halal(){
+  addUser("Looking for Halal food");
+  addBot("Great choice. This restaurant is fully Halal-friendly.\n\n✔ No pork\n✔ No alcohol\n✔ Muslim-friendly");
+
+  setOptions([
+    {label:"Tell me more", action: experience},
+  ]);
+}
+
+/* -------- FIRST -------- */
+function first(){
+  addUser("First time in Japan");
+  addBot("No worries! This experience is perfect for beginners.\n\n✔ English support\n✔ Easy to understand\n✔ Guided by chef");
+
+  setOptions([
+    {label:"What is the experience?", action: experience},
+  ]);
+}
+
+/* -------- UNIQUE -------- */
+function unique(){
+  addUser("Something unique");
+  addBot("This is not just a meal.\n\nIt's a live Omakase experience with Wagyu and Sushi.");
+
+  setOptions([
+    {label:"Sounds interesting", action: experience},
+  ]);
+}
+
+/* -------- EXPLORE -------- */
+function explore(){
+  addUser("Just exploring");
+  addBot("Let me show you one of the most recommended dining experiences in Tokyo.");
+
+  setOptions([
+    {label:"Show me", action: experience},
+  ]);
+}
+
+/* -------- EXPERIENCE -------- */
+function experience(){
+  addUser("Tell me more");
+  addBot("You sit in front of the chef.\n\n✔ Sushi made one by one\n✔ A5 Wagyu sliced in front of you\n✔ Interactive experience\n\nIt feels like a performance.");
+
+  
+  setOptions([
+    {label:"Price?", action: price},
+    {label:"Is it worth it?", action: trust}
+  ]);
+}
+
+/* -------- PRICE -------- */
+function price(){
+  addUser("Price?");
+  addBot("The experience starts from around ¥20,000.\n\nMost guests say it's the highlight of their Tokyo trip.");
+
+  
+  setOptions([
+    {label:"Show me the restaurant", action: recommend}
+  ]);
+}
+
+/* -------- TRUST -------- */
+function trust(){
+  addUser("Is it worth it?");
+  addBot("Guests say:\n\n⭐ Best meal in Tokyo\n⭐ Worth every yen\n⭐ Unforgettable experience");
+
+  
+  setOptions([
+    {label:"Show me the restaurant", action: recommend}
+  ]);
+}
+
+/* -------- FINAL -------- */
+function recommend(){
+  addUser("Show me the restaurant");
+
+  addBot("Based on what you're looking for, this is the best match for you 👇");
+
+  addBot("🏆 Omakase Sushi & Wagyu Experience (Halal Friendly)\n\n✔ Premium Wagyu\n✔ Omakase Sushi\n✔ Halal certified\n✔ Located in Shinjuku");
+
+  
+  options.innerHTML = `
+    <a href="https://www.google.com/maps/place/Tokyo+Omakase+Sushi+Wagyu+(Halal)+Shinjuku+Restaurant/" 
+       target="_blank"
+       class="bg-[#c9a96e] text-white text-center p-4 rounded-xl shadow">
+       View Location (Google Maps)
+    </a>
+
+    <a href="https://www.tablecheck.com/shops/halal-wagyu-shinjuku-5w-tokyo/reserve"
+       target="_blank"
+       class="bg-black text-white text-center p-4 rounded-xl shadow">
+       Reserve Now
+    </a>
+  `;
+}
+
+start();
+</script>
+
+</body>
+</html>
