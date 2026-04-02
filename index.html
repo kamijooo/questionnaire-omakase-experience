@@ -1,164 +1,707 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tokyo Dining Guide</title>
-<script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tokyo Dining Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --bg:#f6f2eb;
+      --panel:#fbf8f3;
+      --line:#e7dfd2;
+      --text:#2f2a24;
+      --muted:#8a8073;
+      --gold:#c9a96e;
+      --gold-dark:#a8864b;
+      --bot:#ffffff;
+      --user:#c9a96e;
+      --user-text:#ffffff;
+      --shadow:0 10px 30px rgba(53, 38, 17, 0.08);
+    }
 
-<style>
-body { background:#f8f6f2; }
-.chat { max-width:420px; margin:auto; }
-.fade { animation:fadeIn .4s ease forwards; }
-@keyframes fadeIn {
-  from {opacity:0; transform:translateY(10px);}
-  to {opacity:1; transform:translateY(0);}
-}
-</style>
+    * { box-sizing: border-box; }
 
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at top, rgba(201,169,110,0.10), transparent 32%),
+        linear-gradient(180deg, #f8f4ee 0%, var(--bg) 100%);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height:100vh;
+    }
+
+    .app-shell{
+      max-width:460px;
+      margin:0 auto;
+      min-height:100vh;
+      background:linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.55) 100%);
+      border-left:1px solid rgba(255,255,255,0.45);
+      border-right:1px solid rgba(255,255,255,0.45);
+      box-shadow:0 0 0 1px rgba(255,255,255,0.2), 0 20px 60px rgba(58,42,18,0.08);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter: blur(18px);
+      background:rgba(248,244,238,0.86);
+      border-bottom:1px solid var(--line);
+    }
+
+    .fade-up{
+      animation:fadeUp .34s ease forwards;
+    }
+
+    @keyframes fadeUp{
+      from{ opacity:0; transform:translateY(10px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+    .typing-dot{
+      width:7px;
+      height:7px;
+      border-radius:999px;
+      background:#baa88d;
+      animation:blink 1.2s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(2){ animation-delay:.16s; }
+    .typing-dot:nth-child(3){ animation-delay:.32s; }
+
+    @keyframes blink{
+      0%, 80%, 100%{ transform:translateY(0); opacity:.38; }
+      40%{ transform:translateY(-4px); opacity:1; }
+    }
+
+    .message-bot{
+      background:var(--bot);
+      border:1px solid rgba(201,169,110,0.12);
+      box-shadow: var(--shadow);
+      border-radius:20px 20px 20px 8px;
+    }
+
+    .message-user{
+      background:linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color:var(--user-text);
+      box-shadow:0 12px 28px rgba(169,134,75,0.22);
+      border-radius:20px 20px 8px 20px;
+    }
+
+    .option-btn{
+      width:100%;
+      text-align:left;
+      background:rgba(255,255,255,0.92);
+      border:1px solid rgba(201,169,110,0.20);
+      color:#352d24;
+      border-radius:18px;
+      padding:16px 16px;
+      box-shadow:0 8px 24px rgba(53,38,17,0.05);
+      transition:all .18s ease;
+    }
+
+    .option-btn:hover{
+      transform:translateY(-1px);
+      border-color:rgba(201,169,110,0.45);
+      box-shadow:0 14px 34px rgba(53,38,17,0.09);
+      background:#fff;
+    }
+
+    .option-btn:active{
+      transform:scale(.985);
+    }
+
+    .option-title{
+      font-size:14px;
+      font-weight:600;
+      line-height:1.45;
+      margin-bottom:4px;
+    }
+
+    .option-sub{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .result-card{
+      background:linear-gradient(180deg, #ffffff 0%, #fcfaf6 100%);
+      border:1px solid rgba(201,169,110,0.18);
+      box-shadow:var(--shadow);
+      border-radius:22px;
+      overflow:hidden;
+    }
+
+    .gold-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      background:rgba(201,169,110,0.12);
+      color:#8b6b31;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:600;
+      letter-spacing:.02em;
+    }
+
+    .scroll-area{
+      padding:18px 14px 120px;
+    }
+
+    .footer-actions{
+      position:sticky;
+      bottom:0;
+      z-index:15;
+      background:linear-gradient(180deg, rgba(246,242,235,0) 0%, rgba(246,242,235,.94) 24%, rgba(246,242,235,.98) 100%);
+      backdrop-filter:blur(10px);
+      padding:14px;
+      border-top:1px solid rgba(231,223,210,0.85);
+    }
+
+    .subtle-status{
+      font-size:11px;
+      color:var(--muted);
+      letter-spacing:.02em;
+    }
+
+    .avatar-ring{
+      box-shadow:0 0 0 2px rgba(255,255,255,.9), 0 0 0 4px rgba(201,169,110,.18);
+    }
+
+    .chat-pattern{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        radial-gradient(rgba(201,169,110,0.05) 0.9px, transparent 0.9px);
+      background-size:16px 16px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.35), transparent 70%);
+    }
+  </style>
 </head>
-
 <body>
+  <div class="app-shell">
+    <div class="chat-pattern"></div>
 
-<div class="chat p-4">
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="px-4 pt-4 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="relative shrink-0">
+            <img
+              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80"
+              alt="Concierge"
+              class="w-12 h-12 rounded-full object-cover avatar-ring"
+            />
+            <span class="absolute right-0 bottom-0 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-white"></span>
+          </div>
 
-<div class="text-center mb-6">
-  <h1 class="text-lg font-semibold">Tokyo Dining Guide</h1>
-  <p class="text-xs text-gray-500">Find your perfect restaurant</p>
-</div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <h1 class="text-[15px] font-semibold leading-none">Mina · Tokyo Dining Guide</h1>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">Online</span>
+            </div>
+            <p class="text-[12px] text-[#8a8073] mt-1">
+              Personal dining concierge for Tokyo visitors
+            </p>
+          </div>
+        </div>
 
-<div id="chat" class="flex flex-col gap-3"></div>
-<div id="options" class="mt-6 flex flex-col gap-3"></div>
+        <div class="mt-3 flex items-center justify-between text-[11px] text-[#8a8073]">
+          <span>Usually replies in a few seconds</span>
+          <span>English support available</span>
+        </div>
+      </div>
+    </header>
 
-</div>
+    <!-- BODY -->
+    <main class="scroll-area">
+      <div class="mb-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 border border-[#e7dfd2] text-[11px] text-[#8a8073] shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-[#c9a96e]"></span>
+          Answer 4 quick questions and get a curated recommendation
+        </div>
+      </div>
 
-<script>
+      <div id="chat" class="flex flex-col gap-4"></div>
+    </main>
 
-const chat = document.getElementById("chat");
-const options = document.getElementById("options");
+    <!-- OPTIONS -->
+    <div class="footer-actions">
+      <div id="options" class="flex flex-col gap-3"></div>
+    </div>
+  </div>
 
-let answers = {};
+  <script>
+    const chat = document.getElementById("chat");
+    const options = document.getElementById("options");
 
-function bot(text){
-  const div = document.createElement("div");
-  div.className = "bg-white p-4 rounded-2xl shadow text-sm fade";
-  div.innerText = text;
-  chat.appendChild(div);
-}
+    const state = {
+      answers: {}
+    };
 
-function user(text){
-  const div = document.createElement("div");
-  div.className = "bg-[#c9a96e] text-white p-3 rounded-2xl self-end text-sm fade";
-  div.innerText = text;
-  chat.appendChild(div);
-}
+    const LINKS = {
+      maps: "https://www.google.com/maps/place/Tokyo+Omakase+Sushi+Wagyu+(Halal)+Shinjuku+Restaurant/",
+      reserve: "https://www.tablecheck.com/shops/halal-wagyu-shinjuku-5w-tokyo/reserve"
+    };
 
-function setOptions(arr){
-  options.innerHTML = "";
-  arr.forEach(o=>{
-    const btn = document.createElement("button");
-    btn.className = "bg-white border p-4 rounded-xl shadow text-left hover:bg-gray-50 active:scale-95 transition fade";
-    btn.innerText = o.label;
-    btn.onclick = ()=> o.action();
-    options.appendChild(btn);
-  });
-}
+    function scrollToBottom() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
 
-/* ===== Q1 ===== */
-function start(){
-  bot("Let's find the best dining experience for you in Tokyo.");
+    function createMetaRow(name = "Mina", time = "now") {
+      const meta = document.createElement("div");
+      meta.className = "flex items-center gap-2 mb-2 ml-1";
+      meta.innerHTML = `
+        <img
+          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80"
+          alt="${name}"
+          class="w-7 h-7 rounded-full object-cover border border-white shadow-sm"
+        />
+        <span class="text-[11px] text-[#8a8073]">${name}</span>
+        <span class="w-1 h-1 rounded-full bg-[#cfc3b1]"></span>
+        <span class="text-[10px] text-[#a09486]">${time}</span>
+      `;
+      return meta;
+    }
 
-  setTimeout(()=>{
-    bot("Q1. What is most important for you?");
-    
-    setOptions([
-      {label:"Halal-friendly", action: ()=>{answers.q1="halal"; q2();}},
-      {label:"Luxury experience", action: ()=>{answers.q1="luxury"; q2();}},
-      {label:"Casual / Easy", action: ()=>{answers.q1="easy"; q2();}}
-    ]);
-  },500);
-}
+    function botMessage(text) {
+      const wrap = document.createElement("div");
+      wrap.className = "max-w-[86%] fade-up";
+      wrap.appendChild(createMetaRow("Mina", "online"));
 
-/* ===== Q2 ===== */
-function q2(){
-  user("Selected");
-  bot("Q2. What kind of food excites you most?");
+      const bubble = document.createElement("div");
+      bubble.className = "message-bot px-4 py-3 text-[14px] leading-6 text-[#352d24]";
+      bubble.innerText = text;
 
-  setOptions([
-    {label:"Wagyu", action: ()=>{answers.q2="wagyu"; q3();}},
-    {label:"Sushi", action: ()=>{answers.q2="sushi"; q3();}},
-    {label:"Both", action: ()=>{answers.q2="both"; q3();}}
-  ]);
-}
+      wrap.appendChild(bubble);
+      chat.appendChild(wrap);
+      scrollToBottom();
+    }
 
-/* ===== Q3 ===== */
-function q3(){
-  user("Selected");
-  bot("Q3. What kind of experience do you want?");
+    function userMessage(text) {
+      const wrap = document.createElement("div");
+      wrap.className = "max-w-[82%] self-end fade-up";
 
-  setOptions([
-    {label:"Chef performance", action: ()=>{answers.q3="performance"; q4();}},
-    {label:"Relaxed dining", action: ()=>{answers.q3="relax"; q4();}},
-    {label:"Not sure", action: ()=>{answers.q3="any"; q4();}}
-  ]);
-}
+      const bubble = document.createElement("div");
+      bubble.className = "message-user px-4 py-3 text-[14px] leading-6";
+      bubble.innerText = text;
 
-/* ===== Q4 ===== */
-function q4(){
-  user("Selected");
-  bot("Q4. What is your budget range?");
+      const meta = document.createElement("div");
+      meta.className = "mt-1 mr-1 text-right text-[10px] text-[#a09486]";
+      meta.innerText = "Sent";
 
-  setOptions([
-    {label:"Around ¥10,000", action: ()=>{answers.q4="low"; result();}},
-    {label:"¥20,000+", action: ()=>{answers.q4="mid"; result();}},
-    {label:"Premium experience", action: ()=>{answers.q4="high"; result();}}
-  ]);
-}
+      wrap.appendChild(bubble);
+      wrap.appendChild(meta);
+      chat.appendChild(wrap);
+      scrollToBottom();
+    }
 
-/* ===== RESULT ===== */
-function result(){
-  user("Selected");
+    function showTyping(duration = 1100) {
+      return new Promise(resolve => {
+        const wrap = document.createElement("div");
+        wrap.className = "max-w-[78%] fade-up";
+        wrap.id = "typing-indicator";
+        wrap.appendChild(createMetaRow("Mina", "typing..."));
 
-  bot("Analyzing your preferences...");
+        const bubble = document.createElement("div");
+        bubble.className = "message-bot px-4 py-3 inline-flex items-center gap-1.5";
+        bubble.innerHTML = `
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        `;
 
-  setTimeout(()=>{
-    bot("This is the best match for you 👇");
+        wrap.appendChild(bubble);
+        chat.appendChild(wrap);
+        scrollToBottom();
 
-    const card = document.createElement("div");
-    card.className = "bg-white p-4 rounded-2xl shadow fade";
+        setTimeout(() => {
+          wrap.remove();
+          resolve();
+        }, duration);
+      });
+    }
 
-    card.innerHTML = `
-      <h3 class="font-semibold mb-2">Omakase Sushi & Wagyu Experience</h3>
-      <p class="text-sm text-gray-600 mb-3">
-        ✔ Halal-friendly<br>
-        ✔ Wagyu & Sushi course<br>
-        ✔ Live chef experience<br>
-        ✔ Located in Shinjuku
-      </p>
-    `;
+    function setOptions(items) {
+      options.innerHTML = "";
+      items.forEach(item => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn fade-up";
+        btn.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="option-title">${item.label}</div>
+              ${item.sub ? `<div class="option-sub">${item.sub}</div>` : ""}
+            </div>
+            <div class="shrink-0 text-[#c9a96e] text-[18px] leading-none mt-0.5">›</div>
+          </div>
+        `;
+        btn.onclick = item.action;
+        options.appendChild(btn);
+      });
+      scrollToBottom();
+    }
 
-    chat.appendChild(card);
+    function clearOptions() {
+      options.innerHTML = "";
+    }
 
-    options.innerHTML = `
-      <a href="https://www.google.com/maps/place/Tokyo+Omakase+Sushi+Wagyu+(Halal)+Shinjuku+Restaurant/"
-         target="_blank"
-         class="bg-[#c9a96e] text-white text-center p-4 rounded-xl shadow fade">
-         View Location
-      </a>
+    async function askQ1() {
+      await showTyping(1000);
+      botMessage("Hi, I’ll help you find the best dining experience in Tokyo. Let’s start with what matters most to you.");
+      await showTyping(900);
+      botMessage("Q1. What is your top priority for this meal?");
 
-      <a href="https://www.tablecheck.com/shops/halal-wagyu-shinjuku-5w-tokyo/reserve"
-         target="_blank"
-         class="bg-black text-white text-center p-4 rounded-xl shadow fade">
-         Reserve Now
-      </a>
-    `;
+      setOptions([
+        {
+          label: "Halal-friendly dining",
+          sub: "I need a place where I can eat with confidence.",
+          action: async () => {
+            state.answers.q1 = "halal";
+            userMessage("Halal-friendly dining");
+            clearOptions();
+            await transitionText("Understood. I’ll prioritize safety and comfort first.");
+            askQ2();
+          }
+        },
+        {
+          label: "A luxury experience",
+          sub: "I want this meal to feel special and memorable.",
+          action: async () => {
+            state.answers.q1 = "luxury";
+            userMessage("A luxury experience");
+            clearOptions();
+            await transitionText("Perfect. I’ll look for something truly memorable.");
+            askQ2();
+          }
+        },
+        {
+          label: "Easy and beginner-friendly",
+          sub: "I want something approachable for my first time in Japan.",
+          action: async () => {
+            state.answers.q1 = "easy";
+            userMessage("Easy and beginner-friendly");
+            clearOptions();
+            await transitionText("Got it. I’ll keep the recommendation simple and comfortable.");
+            askQ2();
+          }
+        },
+        {
+          label: "A unique cultural experience",
+          sub: "I want something I can only experience in Japan.",
+          action: async () => {
+            state.answers.q1 = "culture";
+            userMessage("A unique cultural experience");
+            clearOptions();
+            await transitionText("Great choice. I’ll focus on something immersive and distinctly Japanese.");
+            askQ2();
+          }
+        }
+      ]);
+    }
 
-  },800);
-}
+    async function askQ2() {
+      await showTyping(1000);
+      botMessage("Q2. Which part of the meal excites you the most?");
 
-start();
+      setOptions([
+        {
+          label: "Wagyu",
+          sub: "I really want premium Japanese beef.",
+          action: async () => {
+            state.answers.q2 = "wagyu";
+            userMessage("Wagyu");
+            clearOptions();
+            await transitionText("Excellent. I’ll keep premium wagyu at the center of the recommendation.");
+            askQ3();
+          }
+        },
+        {
+          label: "Sushi",
+          sub: "I want the classic Japanese counter experience.",
+          action: async () => {
+            state.answers.q2 = "sushi";
+            userMessage("Sushi");
+            clearOptions();
+            await transitionText("Wonderful. A chef-led sushi experience will matter here.");
+            askQ3();
+          }
+        },
+        {
+          label: "Both wagyu and sushi",
+          sub: "I want the best of both in one meal.",
+          action: async () => {
+            state.answers.q2 = "both";
+            userMessage("Both wagyu and sushi");
+            clearOptions();
+            await transitionText("That’s a strong choice. Combining both usually creates the most memorable experience.");
+            askQ3();
+          }
+        },
+        {
+          label: "I’m open to anything amazing",
+          sub: "Surprise me with the best fit.",
+          action: async () => {
+            state.answers.q2 = "open";
+            userMessage("I’m open to anything amazing");
+            clearOptions();
+            await transitionText("Love that. I’ll focus on overall impact and guest satisfaction.");
+            askQ3();
+          }
+        }
+      ]);
+    }
 
-</script>
+    async function askQ3() {
+      await showTyping(1100);
+      botMessage("Q3. What kind of atmosphere do you want?");
 
+      setOptions([
+        {
+          label: "Live chef performance",
+          sub: "I want to see the experience happen in front of me.",
+          action: async () => {
+            state.answers.q3 = "performance";
+            userMessage("Live chef performance");
+            clearOptions();
+            await transitionText("Perfect. I’ll prioritize an interactive counter-style experience.");
+            askQ4();
+          }
+        },
+        {
+          label: "Relaxed and elegant",
+          sub: "I want something refined but not intimidating.",
+          action: async () => {
+            state.answers.q3 = "relaxed";
+            userMessage("Relaxed and elegant");
+            clearOptions();
+            await transitionText("That helps a lot. I’ll look for a place that feels polished and welcoming.");
+            askQ4();
+          }
+        },
+        {
+          label: "A once-in-a-trip highlight",
+          sub: "I want a meal I’ll remember after going home.",
+          action: async () => {
+            state.answers.q3 = "highlight";
+            userMessage("A once-in-a-trip highlight");
+            clearOptions();
+            await transitionText("Exactly. I’ll optimize for a recommendation that feels worth planning around.");
+            askQ4();
+          }
+        },
+        {
+          label: "Something easy to enjoy as a traveler",
+          sub: "I don’t want to worry about etiquette or confusion.",
+          action: async () => {
+            state.answers.q3 = "easy";
+            userMessage("Something easy to enjoy as a traveler");
+            clearOptions();
+            await transitionText("Makes sense. I’ll lean toward something tourist-friendly and easy to follow.");
+            askQ4();
+          }
+        }
+      ]);
+    }
+
+    async function askQ4() {
+      await showTyping(1000);
+      botMessage("Q4. Which budget feels right for this experience?");
+
+      setOptions([
+        {
+          label: "Around ¥10,000–¥15,000",
+          sub: "I want something special, but not too expensive.",
+          action: async () => {
+            state.answers.q4 = "entry";
+            userMessage("Around ¥10,000–¥15,000");
+            clearOptions();
+            await transitionText("Understood. I’ll keep value in mind.");
+            showResult();
+          }
+        },
+        {
+          label: "Around ¥20,000 and above",
+          sub: "I’m okay paying more for quality.",
+          action: async () => {
+            state.answers.q4 = "mid";
+            userMessage("Around ¥20,000 and above");
+            clearOptions();
+            await transitionText("Great. That opens up stronger premium options.");
+            showResult();
+          }
+        },
+        {
+          label: "Premium experience first",
+          sub: "I care more about the experience than the price.",
+          action: async () => {
+            state.answers.q4 = "premium";
+            userMessage("Premium experience first");
+            clearOptions();
+            await transitionText("Perfect. I’ll prioritize the most impressive overall experience.");
+            showResult();
+          }
+        },
+        {
+          label: "Not sure yet",
+          sub: "I want to see the recommendation first.",
+          action: async () => {
+            state.answers.q4 = "unsure";
+            userMessage("Not sure yet");
+            clearOptions();
+            await transitionText("No problem. I’ll recommend the best fit first, then you can decide.");
+            showResult();
+          }
+        }
+      ]);
+    }
+
+    async function transitionText(text) {
+      await showTyping(900);
+      botMessage(text);
+    }
+
+    function buildReasonText() {
+      const reasons = [];
+
+      if (state.answers.q1 === "halal") {
+        reasons.push("you said halal-friendly dining is important");
+      }
+      if (state.answers.q2 === "both") {
+        reasons.push("you want both wagyu and sushi in one experience");
+      } else if (state.answers.q2 === "wagyu") {
+        reasons.push("premium wagyu is one of your main priorities");
+      } else if (state.answers.q2 === "sushi") {
+        reasons.push("a real sushi experience matters to you");
+      }
+      if (state.answers.q3 === "performance") {
+        reasons.push("you want to enjoy live chef performance");
+      }
+      if (state.answers.q3 === "highlight") {
+        reasons.push("you are looking for a trip highlight, not just a meal");
+      }
+      if (state.answers.q3 === "easy") {
+        reasons.push("you want something easy to enjoy as a traveler");
+      }
+      if (state.answers.q4 === "premium" || state.answers.q4 === "mid") {
+        reasons.push("you’re open to paying for a memorable quality experience");
+      }
+
+      if (reasons.length === 0) {
+        return "Based on your answers, this is the strongest overall match for your Tokyo trip.";
+      }
+
+      if (reasons.length === 1) {
+        return `Based on your answers, this is a strong match because ${reasons[0]}.`;
+      }
+
+      const last = reasons.pop();
+      return `Based on your answers, this is a strong match because ${reasons.join(", ")}, and ${last}.`;
+    }
+
+    async function showResult() {
+      await showTyping(1400);
+      botMessage("I’ve got a recommendation for you.");
+      await showTyping(1100);
+      botMessage(buildReasonText());
+
+      const wrap = document.createElement("div");
+      wrap.className = "fade-up mt-1";
+
+      wrap.innerHTML = `
+        <div class="result-card">
+          <div class="p-4 border-b border-[rgba(201,169,110,0.14)] bg-[linear-gradient(135deg,rgba(201,169,110,0.16),rgba(201,169,110,0.06))]">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="gold-chip mb-2">Recommended for you</div>
+                <h3 class="text-[18px] font-semibold leading-snug">Omakase Sushi & Wagyu Experience</h3>
+                <p class="text-[12px] text-[#8a8073] mt-1">Shinjuku · Tokyo</p>
+              </div>
+              <div class="text-right">
+                <div class="text-[12px] text-[#8a8073]">Google Reviews</div>
+                <div class="text-[16px] font-semibold text-[#8b6b31]">4.8 ★</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4">
+            <div class="aspect-[16/10] rounded-2xl overflow-hidden mb-4 bg-[#efe7da]">
+              <img
+                src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1200&q=80"
+                alt="Omakase dining"
+                class="w-full h-full object-cover"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 mb-4">
+              <div class="rounded-2xl bg-[#faf5ec] border border-[#eee1ca] px-3 py-3 text-[12px] text-[#5e503e]">✔ Halal-friendly</div>
+              <div class="rounded-2xl bg-[#faf5ec] border border-[#eee1ca] px-3 py-3 text-[12px] text-[#5e503e]">✔ Wagyu & sushi course</div>
+              <div class="rounded-2xl bg-[#faf5ec] border border-[#eee1ca] px-3 py-3 text-[12px] text-[#5e503e]">✔ Live chef experience</div>
+              <div class="rounded-2xl bg-[#faf5ec] border border-[#eee1ca] px-3 py-3 text-[12px] text-[#5e503e]">✔ Easy for visitors</div>
+            </div>
+
+            <p class="text-[13px] leading-6 text-[#5b5145]">
+              This restaurant combines premium Japanese wagyu, omakase sushi, and an immersive chef-led atmosphere in one place.
+              It is especially strong for travelers looking for a memorable Tokyo dining experience with halal-friendly reassurance.
+            </p>
+          </div>
+        </div>
+      `;
+
+      chat.appendChild(wrap);
+      scrollToBottom();
+
+      await showTyping(1000);
+      botMessage("You can check the location first, or go straight to reservation.");
+
+      options.innerHTML = `
+        <a
+          href="${LINKS.maps}"
+          target="_blank"
+          rel="noopener"
+          class="option-btn fade-up block text-center"
+        >
+          <div class="option-title text-center">View location on Google Maps</div>
+          <div class="option-sub text-center">Open the recommended restaurant in Maps</div>
+        </a>
+
+        <a
+          href="${LINKS.reserve}"
+          target="_blank"
+          rel="noopener"
+          class="option-btn fade-up block text-center"
+          style="background:linear-gradient(135deg, #c9a96e 0%, #a8864b 100%); color:white; border-color:transparent;"
+        >
+          <div class="option-title text-center" style="color:white;">Reserve now</div>
+          <div class="option-sub text-center" style="color:rgba(255,255,255,.82);">Check availability on TableCheck</div>
+        </a>
+
+        <button
+          class="option-btn fade-up"
+          onclick="restartChat()"
+        >
+          <div class="option-title">Start over</div>
+          <div class="option-sub">Retake the chat and compare your answers</div>
+        </button>
+      `;
+
+      scrollToBottom();
+    }
+
+    function restartChat() {
+      state.answers = {};
+      chat.innerHTML = "";
+      options.innerHTML = "";
+      askQ1();
+    }
+
+    askQ1();
+  </script>
 </body>
 </html>
